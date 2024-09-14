@@ -21,6 +21,8 @@ class Dragger:
         img_centre = (self.mouseX , self.mouseY)
         self.piece.texture_rect = img.get_rect(centre = img_centre)
 
+        surface.blit(img , self.piece.texture_rect)
+
     def update_mouse(self , pos):
         self.mouseX , self.mouseY = pos
 
