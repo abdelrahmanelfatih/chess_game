@@ -23,6 +23,9 @@ class Main:
             game.show_bg(screen)
             game.show_pieces(screen)
 
+            if dragger.dragging:
+                dragger.update_blit(screen)
+
             for event in pygame.event.get():
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -39,6 +42,8 @@ class Main:
                 elif event.type ==pygame.MOUSEMOTION:
                     if dragger.dragging:
                         dragger.update_mouse(event.pos)
+                        game.show_bg(screen)
+                        game.show_pieces(screen)
                         dragger.update_blit(screen)
 
                 elif event.type == pygame.MOUSEBUTTONUP:
