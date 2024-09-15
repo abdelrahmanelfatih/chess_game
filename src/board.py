@@ -76,21 +76,76 @@ class Board:
                         #append new valid move
                         piece.add_move(move)
 
+        def straightline_moves(incrs):
+            for incr in incrs:
+                row_incr , col_incr = incr
+                possible_move_row = row + row_incr
+                possible_move_col = col + col_incr
+
+            while True:
+                if Square.in_range(possible_move_col , possible_move_row):
+                    # create possible new move
+                    initial = Square(row, col)
+                    final = Square(possible_move_row , possible_move_col)
+                    move = Move(initial , final)
+
+                    #empty = continue looping
+                    if self.squares[possible_move_row][possible_move_col].is_empty():
+                        #append new move
+                        piece.add_move(move)
+
+
+                    #has enemy piece = add move + break
+                    if self.squares[possible_move_row][possible_move_col].has_enemy_piece(piece.color):
+                        #append new move
+                        piece.add_move(move)
+                        break
+
+                    #has team piece = break
+                    if self.squares[possible_move_row][possible_move_col].has_team_piece(piece.color):
+                        break
+                #not in range
+                else: break
+
+                #incrementing incrs
+                possible_move_row = possible_move_row + row_incr
+                possible_move_col = possible_move_row + col_incr
+
 
         if isinstance(piece , Pawn):
-            pass
+            pawn_move()
 
         elif isinstance(piece , Knight):
-            pass
+            knight_moves()
 
         elif isinstance(piece , Bishop):
-            pass
+            straightline_moves([
+                (-1,1) ,  #up-right
+                (-1 , -1) ,  #up-left
+                (1 , 1) , #down-right
+                (1 , -1), #down-left
+            ])
 
         elif isinstance(piece, Rook):
-            pass
+            straightline_moves([
+                (-1 , 0) , #up
+                (0 , 1) ,#right
+                (1 , 0) , #down
+                (0 , -1), #left
+            ])
 
         elif isinstance(piece, Queen):
-            pass
+            straightline_moves([
+                (-1, 1),  # up-right
+                (-1, -1),  # up-left
+                (1, 1),  # down-right
+                (1, -1),  # down-left
+                (-1, 0),  # up
+                (0, 1),  # right
+                (1, 0),  # down
+                (0, -1)  # left
+            ])
+
         elif isinstance(piece, King):
             pass
 
