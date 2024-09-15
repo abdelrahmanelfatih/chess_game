@@ -15,10 +15,10 @@ class Square:
     def has_team_piece(self , color):
         return self.has_piece() and self.piece.color == color
 
-    def has_rival_piece(self , color):
+    def has_enemy_piece(self , color):
         return self.has_piece() and self.piece.color != color
 
-    def isempty_or_rival(self , color):
+    def isempty_or_enemy(self , color):
         return self.isempty() or self.has_rival_piece(color)
 
 
