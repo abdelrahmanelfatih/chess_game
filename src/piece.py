@@ -14,7 +14,18 @@ class Piece:
         self.texture_rect = texture_rect
 
     def set_texture(self, size=80):
-        self.texture = os.path.join(f'C:/Users/nar7g/PycharmProjects/chess game/assets/images/imgs-{size}px/{self.color}_{self.name}.png') #for some reason the abs path only works
+        # Get the base path of the project root
+        base_path = os.path.dirname(os.path.dirname(__file__))  # This gets the root directory (above 'src')
+
+        # Dynamically construct the relative path to the image file
+        self.texture = os.path.join(
+            base_path,
+            'assets',
+            'images',
+            f'imgs-{size}px',
+            f'{self.color}_{self.name}.png'
+        )
+
 
     def add_move(self, move):
         self.moves.append(move)
