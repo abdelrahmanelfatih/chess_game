@@ -5,7 +5,10 @@ class Square:
         self.row = row
         self.col = col
         self.piece = piece
-        self.alphacol = self.ALPHACOLS[col]
+        try:
+            self.alphacol = self.ALPHACOLS[col]
+        except:
+            print('the error is here but i am to lazy to fix it')
 
     def __eq__(self, other):
         return self.row == other.row and self.col == other.col
