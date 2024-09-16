@@ -12,10 +12,11 @@ class Config:
         self.idx = 0
         self.theme = self.themes[self.idx]
         self.font = pygame.font.SysFont('monospace', 18, bold=True)
-        self.move_sound = Sound(
-            os.path.join('C:/Users/nar7g/PycharmProjects/chess game/assets/sounds/move.wav'))
-        self.capture_sound = Sound(
-            os.path.join('C:/Users/nar7g/PycharmProjects/chess game/assets/sounds/capture.wav'))
+
+        # Move one level up from 'src' directory to access 'assets'
+        base_path = os.path.dirname(os.path.dirname(__file__))  # This gets the path to the root of the project
+        self.move_sound = Sound(os.path.join(base_path, 'assets', 'sounds', 'move.wav'))
+        self.capture_sound = Sound(os.path.join(base_path, 'assets', 'sounds', 'capture.wav'))
 
     def change_theme(self):
         self.idx += 1
