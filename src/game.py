@@ -16,19 +16,24 @@ class Game:
         self.dragger = Dragger()
         self.config = Config()
 
+
+    def bliting(self , row , col , surface , theme_light , theme_dark , width = 0):
+        theme = self.config.theme
+        # color
+        color = theme_light if (row + col) % 2 == 0 else theme_dark
+        # rect
+        rect = (col * SQSIZE, row * SQSIZE, SQSIZE, SQSIZE)
+        # blit
+        pygame.draw.rect(surface, color, rect , width = width)
+
     # blit methods
 
     def show_bg(self, surface):
         theme = self.config.theme
-
+        game = Game()
         for row in range(ROWS):
             for col in range(COLS):
-                # color
-                color = theme.bg.light if (row + col) % 2 == 0 else theme.bg.dark
-                # rect
-                rect = (col * SQSIZE, row * SQSIZE, SQSIZE, SQSIZE)
-                # blit
-                pygame.draw.rect(surface, color, rect)
+                game.bliting(row,col,surface , theme.bg.light , theme.bg.dark)
 
                 # row coordinates
                 if col == 0:
@@ -67,33 +72,25 @@ class Game:
 
     def show_moves(self, surface):
         theme = self.config.theme
+        game = Game()
 
         if self.dragger.dragging:
             piece = self.dragger.piece
 
             # loop all valid moves
             for move in piece.moves:
-                # color
-                color = theme.moves.light if (move.final.row + move.final.col) % 2 == 0 else theme.moves.dark
-                # rect
-                rect = (move.final.col * SQSIZE, move.final.row * SQSIZE, SQSIZE, SQSIZE)
-                # blit
-                pygame.draw.rect(surface, color, rect)
+                game.bliting(move.final.row , move.final.col , surface , theme.moves.light , theme.moves.dark)
 
     def show_last_move(self, surface):
         theme = self.config.theme
+        game = Game()
 
         if self.board.last_move:
             initial = self.board.last_move.initial
             final = self.board.last_move.final
 
             for pos in [initial, final]:
-                # color
-                color = theme.trace.light if (pos.row + pos.col) % 2 == 0 else theme.trace.dark
-                # rect
-                rect = (pos.col * SQSIZE, pos.row * SQSIZE, SQSIZE, SQSIZE)
-                # blit
-                pygame.draw.rect(surface, color, rect)
+                game.bliting(pos.row , pos.col , surface , theme.trace.light , theme.trace.dark)
 
     def show_hover(self, surface):
         if self.hovered_sqr:
@@ -102,7 +99,7 @@ class Game:
             # rect
             rect = (self.hovered_sqr.col * SQSIZE, self.hovered_sqr.row * SQSIZE, SQSIZE, SQSIZE)
             # blit
-            pygame.draw.rect(surface, color, rect, width=3)
+            pygame.draw.rect(surface, color, rect, width= 3)
 
     # other methods
 
@@ -119,10 +116,7 @@ class Game:
         self.config.change_theme()
 
     def play_sound(self, captured=False):
-        if captured:
-            self.config.capture_sound.play()
-        else:
-            self.config.move_sound.play()
+        self.config.capture_sound.play() if captured else self.config.move_sound.play()
 
     def reset(self):
         self.__init__()

@@ -1,5 +1,7 @@
 import os
 
+
+
 class Piece:
 
     def __init__(self, name, color, value, texture=None, texture_rect=None):
@@ -14,12 +16,8 @@ class Piece:
         self.texture_rect = texture_rect
 
     def set_texture(self, size=80):
-        # Get the base path of the project root
-        base_path = os.path.dirname(os.path.dirname(__file__))  # This gets the root directory (above 'src')
-
         # Dynamically construct the relative path to the image file
         self.texture = os.path.join(
-            base_path,
             'assets',
             'images',
             f'imgs-{size}px',

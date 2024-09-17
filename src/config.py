@@ -13,10 +13,8 @@ class Config:
         self.theme = self.themes[self.idx]
         self.font = pygame.font.SysFont('monospace', 18, bold=True)
 
-        # Move one level up from 'src' directory to access 'assets'
-        base_path = os.path.dirname(os.path.dirname(__file__))  # This gets the path to the root of the project
-        self.move_sound = Sound(os.path.join(base_path, 'assets', 'sounds', 'move.wav'))
-        self.capture_sound = Sound(os.path.join(base_path, 'assets', 'sounds', 'capture.wav'))
+        self.move_sound = Sound(os.path.join('assets', 'sounds', 'move.wav'))
+        self.capture_sound = Sound(os.path.join('assets', 'sounds', 'capture.wav'))
 
     def change_theme(self):
         self.idx += 1
@@ -24,9 +22,9 @@ class Config:
         self.theme = self.themes[self.idx]
 
     def _add_themes(self):
-        green = Theme((234, 235, 200), (119, 154, 88), (244, 247, 116), (172, 195, 51), '#C86464', '#C84646')
-        brown = Theme((235, 209, 166), (165, 117, 80), (245, 234, 100), (209, 185, 59), '#C86464', '#C84646')
-        blue = Theme((229, 228, 200), (60, 95, 135), (123, 187, 227), (43, 119, 191), '#C86464', '#C84646')
-        gray = Theme((120, 119, 118), (86, 85, 84), (99, 126, 143), (82, 102, 128), '#C86464', '#C84646')
+        green = Theme((234, 235, 200), (119, 154, 88), (244, 247, 116), (172, 195, 51), '#C86464', '#C84646' , (180 , 180 , 180))
+        brown = Theme((235, 209, 166), (165, 117, 80), (245, 234, 100), (209, 185, 59), '#C86464', '#C84646' , (180 , 180 , 180))
+        blue = Theme((229, 228, 200), (60, 95, 135), (123, 187, 227), (43, 119, 191), '#C86464', '#C84646' , (180 , 180 , 180))
+        gray = Theme((120, 119, 118), (86, 85, 84), (99, 126, 143), (82, 102, 128), '#C86464', '#C84646' , (180 , 180 , 180))
 
         self.themes = [green, brown, blue, gray]

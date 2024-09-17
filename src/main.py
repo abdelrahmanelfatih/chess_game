@@ -56,6 +56,8 @@ class Main:
                             dragger.drag_piece(piece)
                             # show methods
                             main.show_methods(screen)
+
+
                 # mouse motion
                 elif event.type == pygame.MOUSEMOTION:
                     motion_row = event.pos[1] // SQSIZE
