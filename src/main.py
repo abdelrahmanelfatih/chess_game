@@ -15,6 +15,16 @@ class Main:
         pygame.display.set_caption('Chess')
         self.game = Game()
 
+    #define a function instead of copy/paste code
+    def show_methods(self , screen):
+        game = self.game
+        game.show_bg(screen)
+        game.show_last_move(screen)
+        game.show_moves(screen)
+        game.show_pieces(screen)
+        game.show_hover(screen)
+
+
     def mainloop(self):
 
         screen = self.screen
@@ -24,11 +34,7 @@ class Main:
 
         while True:
             # show methods
-            game.show_bg(screen)
-            game.show_last_move(screen)
-            game.show_moves(screen)
-            game.show_pieces(screen)
-            game.show_hover(screen)
+            main.show_methods(screen)
 
             if dragger.dragging:
                 dragger.update_blit(screen)
@@ -38,11 +44,9 @@ class Main:
                 # click
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     dragger.update_mouse(event.pos)
-
                     clicked_row = dragger.mouseY // SQSIZE
                     clicked_col = dragger.mouseX // SQSIZE
 
-                    # if clicked square has a piece ?
                     if board.squares[clicked_row][clicked_col].has_piece():
                         piece = board.squares[clicked_row][clicked_col].piece
                         # valid piece (color) ?
@@ -51,11 +55,7 @@ class Main:
                             dragger.save_initial(event.pos)
                             dragger.drag_piece(piece)
                             # show methods
-                            game.show_bg(screen)
-                            game.show_last_move(screen)
-                            game.show_moves(screen)
-                            game.show_pieces(screen)
-
+                            main.show_methods(screen)
                 # mouse motion
                 elif event.type == pygame.MOUSEMOTION:
                     motion_row = event.pos[1] // SQSIZE
@@ -66,11 +66,7 @@ class Main:
                     if dragger.dragging:
                         dragger.update_mouse(event.pos)
                         # show methods
-                        game.show_bg(screen)
-                        game.show_last_move(screen)
-                        game.show_moves(screen)
-                        game.show_pieces(screen)
-                        game.show_hover(screen)
+                        main.show_methods(screen)
                         dragger.update_blit(screen)
 
                 # click release
