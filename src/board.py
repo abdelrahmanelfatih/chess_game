@@ -1,10 +1,12 @@
+import copy
+import os
+
 from const import *
 from square import Square
 from piece import *
 from move import Move
 from sound import Sound
-import copy
-import os
+
 
 
 class Board:
@@ -109,25 +111,17 @@ class Board:
             start = row + piece.dir
             end = row + (piece.dir * (1 + steps))
             for possible_move_row in range(start, end, piece.dir):
-                if Square.in_range(possible_move_row):
-                    if self.squares[possible_move_row][col].isempty():
-                        # create initial and final move squares
-                        initial = Square(row, col)
-                        final = Square(possible_move_row, col)
-                        # create a new move
-                        move = Move(initial, final)
+                if Square.in_range(possible_move_row) and self.squares[possible_move_row][col].isempty():
+                    # create initial and final move squares
+                    initial = Square(row, col)
+                    final = Square(possible_move_row, col)
+                    # create a new move
+                    move = Move(initial, final)
 
-                        # check potencial checks
-                        if bool:
-                            if not self.in_check(piece, move):
-                                # append new move
-                                piece.add_move(move)
-                        else:
-                            # append new move
-                            piece.add_move(move)
-                    # blocked
-                    else:
-                        break
+                    # check potential checks
+                    if bool and not self.in_check(piece, move):
+                        # append new move
+                        piece.add_move(move)
                 # not in range
                 else:
                     break
