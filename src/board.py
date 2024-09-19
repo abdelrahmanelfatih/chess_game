@@ -1,6 +1,7 @@
 import copy
 import os
 
+
 from const import *
 from square import Square
 from piece import *
@@ -12,7 +13,7 @@ from sound import Sound
 class Board:
 
     def __init__(self):
-        self.squares = [[0, 0, 0, 0, 0, 0, 0, 0] for col in range(COLS)]
+        self.squares  = [[0, 0, 0, 0, 0, 0, 0, 0] for col in range(COLS)]
         self.last_move = None
         self._create()
         self._add_pieces('white')
@@ -63,6 +64,15 @@ class Board:
     def valid_move(self, piece, move):
         return move in piece.moves
 
+    def create_moves(self, row, possible_row, col, possible_col=None, piece=None):
+        # create initial and final move squares
+        initial = Square(row, col)
+        final = Square(possible_row, possible_col, piece) if possible_col else Square(possible_row, col, piece)
+        # create a new move
+        move = Move(initial, final)
+
+        return move
+
     def check_promotion(self, piece, final):
         if final.row == 0 or final.row == 7:
             self.squares[final.row][final.col].piece = Queen(piece.color)
@@ -72,13 +82,11 @@ class Board:
 
     def set_true_en_passant(self, piece):
 
-        if not isinstance(piece, Pawn):
-            return
-
-        for row in range(ROWS):
-            for col in range(COLS):
-                if isinstance(self.squares[row][col].piece, Pawn):
-                    self.squares[row][col].piece.en_passant = False
+        if isinstance(piece, Pawn):
+            for row in range(ROWS):
+                for col in range(COLS):
+                    if isinstance(self.squares[row][col].piece, Pawn):
+                        self.squares[row][col].piece.en_passant = False
 
         piece.en_passant = True
 
@@ -104,6 +112,7 @@ class Board:
         '''
 
         def pawn_moves():
+            board = Board()
             # steps
             steps = 1 if piece.moved else 2
 
@@ -112,17 +121,13 @@ class Board:
             end = row + (piece.dir * (1 + steps))
             for possible_move_row in range(start, end, piece.dir):
                 if Square.in_range(possible_move_row) and self.squares[possible_move_row][col].isempty():
-                    # create initial and final move squares
-                    initial = Square(row, col)
-                    final = Square(possible_move_row, col)
-                    # create a new move
-                    move = Move(initial, final)
-
+                    # create moves
+                    move = board.create_moves(row , possible_move_row , col )
                     # check potential checks
                     if bool and not self.in_check(piece, move):
                         # append new move
                         piece.add_move(move)
-                # not in range
+                # not in range and not empty square
                 else:
                     break
 
@@ -130,68 +135,46 @@ class Board:
             possible_move_row = row + piece.dir
             possible_move_cols = [col - 1, col + 1]
             for possible_move_col in possible_move_cols:
-                if Square.in_range(possible_move_row, possible_move_col):
-                    if self.squares[possible_move_row][possible_move_col].has_enemy_piece(piece.color):
-                        # create initial and final move squares
-                        initial = Square(row, col)
-                        final_piece = self.squares[possible_move_row][possible_move_col].piece
-                        final = Square(possible_move_row, possible_move_col, final_piece)
-                        # create a new move
-                        move = Move(initial, final)
-
-                        # check potencial checks
-                        if bool:
-                            if not self.in_check(piece, move):
-                                # append new move
-                                piece.add_move(move)
-                        else:
-                            # append new move
-                            piece.add_move(move)
+                # check if in range or has enemy piece
+                if Square.in_range(possible_move_row, possible_move_col) and self.squares[possible_move_row][possible_move_col].has_enemy_piece(piece.color):
+                    move = board.create_moves(row , possible_move_row , col , possible_move_col , self.squares[possible_move_row][possible_move_col].piece)
+                    # check potencial checks
+                    if bool and not self.in_check(piece, move):
+                        # append new move
+                        piece.add_move(move)
+                    else:
+                        # append new move
+                        piece.add_move(move)
 
             # en passant moves
             r = 3 if piece.color == 'white' else 4
             fr = 2 if piece.color == 'white' else 5
             # left en pessant
-            if Square.in_range(col - 1) and row == r:
-                if self.squares[row][col - 1].has_enemy_piece(piece.color):
+            if Square.in_range(col - 1) and row == r and self.squares[row][col - 1].has_enemy_piece(piece.color):
                     p = self.squares[row][col - 1].piece
-                    if isinstance(p, Pawn):
-                        if p.en_passant:
-                            # create initial and final move squares
-                            initial = Square(row, col)
-                            final = Square(fr, col - 1, p)
-                            # create a new move
-                            move = Move(initial, final)
+                    if isinstance(p, Pawn) and  p.en_passant:
+                        move = board.create_moves(row , fr , col , col - 1 , p)
 
-                            # check potencial checks
-                            if bool:
-                                if not self.in_check(piece, move):
-                                    # append new move
-                                    piece.add_move(move)
-                            else:
-                                # append new move
-                                piece.add_move(move)
+                        # check potencial checks
+                        if bool and not self.in_check(piece, move):
+                            # append new move
+                            piece.add_move(move)
+                        else:
+                            # append new move
+                            piece.add_move(move)
 
             # right en pessant
-            if Square.in_range(col + 1) and row == r:
-                if self.squares[row][col + 1].has_enemy_piece(piece.color):
+            if Square.in_range(col + 1) and row == r and self.squares[row][col + 1].has_enemy_piece(piece.color):
                     p = self.squares[row][col + 1].piece
-                    if isinstance(p, Pawn):
-                        if p.en_passant:
-                            # create initial and final move squares
-                            initial = Square(row, col)
-                            final = Square(fr, col + 1, p)
-                            # create a new move
-                            move = Move(initial, final)
-
-                            # check potencial checks
-                            if bool:
-                                if not self.in_check(piece, move):
-                                    # append new move
-                                    piece.add_move(move)
-                            else:
-                                # append new move
-                                piece.add_move(move)
+                    if isinstance(p, Pawn) and p.en_passant:
+                        move = board.create_moves(row , fr , col , col + 1 , p)
+                        # check potencial checks
+                        if bool and not self.in_check(piece, move):
+                            # append new move
+                            piece.add_move(move)
+                        else:
+                            # append new move
+                            piece.add_move(move)
 
         def knight_moves():
             # 8 possible moves
